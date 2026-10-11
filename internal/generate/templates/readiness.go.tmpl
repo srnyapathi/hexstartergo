@@ -1,0 +1,4 @@
+package application
+import "context"
+// Ready verifies that the application context has not been canceled.
+func Ready(ctx context.Context)error{return ctx.Err()}

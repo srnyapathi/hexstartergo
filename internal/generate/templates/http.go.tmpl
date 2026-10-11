@@ -1,0 +1,4 @@
+package http
+import("context";"net/http";"time")
+// Handler adapts HTTP requests to application readiness.
+func Handler(ready func(context.Context)error)http.Handler{mux:=http.NewServeMux();mux.HandleFunc("GET /readyz",func(w http.ResponseWriter,r *http.Request){ctx,cancel:=context.WithTimeout(r.Context(),2*time.Second);defer cancel();result:=make(chan error,1);go func(){result<-ready(ctx)}();var err error;select{case err=<-result:case <-ctx.Done():err=ctx.Err()};w.Header().Set("Content-Type","text/plain; charset=utf-8");if err!=nil{w.WriteHeader(http.StatusServiceUnavailable);w.Write([]byte("not ready\n"));return};w.Write([]byte("ready\n"))});return mux}

@@ -1,0 +1,17 @@
+# Build artifacts
+/bin/
+*.exe
+*.test
+*.out
+
+# Local caches
+/.cache/
+
+# Local environment
+.env
+.env.*
+!.env.example
+
+# Go workspace files
+go.work
+go.work.sum

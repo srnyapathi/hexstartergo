@@ -1,0 +1,14 @@
+# {{.Name}}
+
+Download module dependencies, test, build, and run from this directory:
+
+```sh
+go mod download
+go test ./...
+go build ./cmd/http
+go run ./cmd/http
+```
+
+GET http://127.0.0.1:8080/readyz returns `ready`. Configure the address with HTTP_ADDR; .env.example documents the variable and is not automatically loaded.
+
+The HTTP adapter calls application readiness. Domain and ports locations are intentionally empty until business requirements exist. No business behavior or persistence is implemented.

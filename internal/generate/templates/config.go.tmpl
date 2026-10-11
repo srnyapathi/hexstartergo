@@ -1,0 +1,3 @@
+package config
+import "os"
+func HTTPAddr()string{if s:=os.Getenv("HTTP_ADDR");s!=""{return s};return "127.0.0.1:8080"}

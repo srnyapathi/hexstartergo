@@ -1,0 +1,4 @@
+package main
+import("context";"errors";"fmt";"net/http";"os";"os/signal";"syscall";"time";inbound "{{.Module}}/internal/adapters/inbound/http";"{{.Module}}/internal/application";"{{.Module}}/internal/config")
+func main(){if err:=run();err!=nil{fmt.Fprintln(os.Stderr,"http server:",err);os.Exit(1)}}
+func run()error{ctx,stop:=signal.NotifyContext(context.Background(),os.Interrupt,syscall.SIGTERM);defer stop();server:=&http.Server{Addr:config.HTTPAddr(),Handler:inbound.Handler(application.Ready),ReadHeaderTimeout:5*time.Second};defer server.Close();done:=make(chan error,1);go func(){done<-server.ListenAndServe()}();select{case err:=<-done:if errors.Is(err,http.ErrServerClosed){return nil};return err;case <-ctx.Done():shutdownCtx,cancel:=context.WithTimeout(context.Background(),10*time.Second);defer cancel();if err:=server.Shutdown(shutdownCtx);err!=nil{return errors.Join(err,server.Close())};err:=<-done;if errors.Is(err,http.ErrServerClosed){return nil};return err}}
